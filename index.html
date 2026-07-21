@@ -36,6 +36,11 @@
       <a href="#sobre-mi">Sobre mí</a>
       <a href="#contacto">Contacto</a>
     </nav>
+    <button class="menu-toggle" aria-label="Abrir menú" aria-expanded="false">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
   </header>
 
   <section class="hero" id="inicio">
@@ -420,18 +425,22 @@
       </div>
 
       <div class="contacto-der">
-        <form onsubmit="return false;">
+        <form id="formContacto" name="contacto" method="POST" data-netlify="true" netlify-honeypot="bot-field">
+          <input type="hidden" name="form-name" value="contacto">
+          <p style="display:none;">
+            <label>No completar si sos humano: <input name="bot-field"></label>
+          </p>
           <div class="campo">
             <label>Nombre</label>
-            <input type="text" placeholder="Tu nombre">
+            <input type="text" name="nombre" placeholder="Tu nombre" required>
           </div>
           <div class="campo">
             <label>Email</label>
-            <input type="email" placeholder="correo@ejemplo.com">
+            <input type="email" name="email" placeholder="correo@ejemplo.com" required>
           </div>
           <div class="campo">
             <label>Mensaje</label>
-            <textarea placeholder="Contame sobre tu negocio y qué problema necesitás resolver..."></textarea>
+            <textarea name="mensaje" placeholder="Contame sobre tu negocio y qué problema necesitás resolver..." required></textarea>
           </div>
           <button type="submit" class="btn-enviar">Enviar consulta</button>
         </form>

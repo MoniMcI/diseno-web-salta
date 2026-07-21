@@ -36,6 +36,55 @@
 
     animarTitulo();
 
+    // --- Menú hamburguesa (mobile) ---
+    const menuToggle = document.querySelector('.menu-toggle');
+    const navEl = document.querySelector('header nav');
+
+    if (menuToggle && navEl) {
+      menuToggle.addEventListener('click', () => {
+        const abierto = navEl.classList.toggle('abierto');
+        menuToggle.classList.toggle('activo', abierto);
+        menuToggle.setAttribute('aria-expanded', abierto ? 'true' : 'false');
+      });
+
+      // Cerrar el menú al elegir una sección
+      navEl.querySelectorAll('a').forEach((link) => {
+        link.addEventListener('click', () => {
+          navEl.classList.remove('abierto');
+          menuToggle.classList.remove('activo');
+          menuToggle.setAttribute('aria-expanded', 'false');
+        });
+      });
+    }
+
+    // --- Envío del formulario de contacto (Netlify Forms, sin recargar la página) ---
+    const formContacto = document.getElementById('formContacto');
+
+    if (formContacto) {
+      formContacto.addEventListener('submit', (evento) => {
+        evento.preventDefault();
+
+        const datos = new FormData(formContacto);
+
+        fetch('/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: new URLSearchParams(datos).toString(),
+        })
+          .then(() => {
+            formContacto.innerHTML = `
+              <div class="form-exito">
+                <strong>¡Gracias por escribir!</strong>
+                <span>Tu consulta se envió correctamente. Te voy a responder a la brevedad.</span>
+              </div>
+            `;
+          })
+          .catch(() => {
+            alert('Hubo un problema al enviar el formulario. Probá de nuevo o escribime directo a mbguantay@gmail.com');
+          });
+      });
+    }
+
     // --- Animación de aparición + conectores calculados entre los pasos del proceso ---
     const pasos = document.querySelectorAll('.proceso-paso');
     const track = document.querySelector('.proceso-track');
