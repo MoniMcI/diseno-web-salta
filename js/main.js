@@ -88,7 +88,10 @@
           headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
           body: new URLSearchParams(datos).toString(),
         })
-          .then(() => {
+          .then((respuesta) => {
+            if (!respuesta.ok) {
+              throw new Error('Respuesta no exitosa: ' + respuesta.status);
+            }
             formContacto.innerHTML = `
               <div class="form-exito">
                 <strong>¡Gracias por escribir!</strong>
@@ -96,7 +99,8 @@
               </div>
             `;
           })
-          .catch(() => {
+          .catch((error) => {
+            console.error('Error al enviar el formulario:', error);
             alert('Hubo un problema al enviar el formulario. Probá de nuevo o escribime directo a mbguantay@gmail.com');
           });
       });
