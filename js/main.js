@@ -1,57 +1,70 @@
     const titulo = document.getElementById('titulo');
 
-    function animarTitulo() {
-      // Guarda el contenido real del H1 (el que ve Google) la primera vez, antes de reemplazarlo
-      if (!titulo.dataset.original) {
-        titulo.dataset.original = titulo.innerHTML;
+function animarTituloElemento(elemento) {
+  if (!elemento.dataset.original) {
+    elemento.dataset.original = elemento.innerHTML;
+  }
+  const temp = document.createElement("div");
+  temp.innerHTML = elemento.dataset.original;
+  elemento.innerHTML = "";
+  let delay = 0;
+
+  function crearLetra(caracter) {
+    const span = document.createElement("span");
+    span.className = "letra";
+    span.style.animationDelay = delay + "s";
+    span.textContent = caracter;
+    delay += 0.025;
+    return span;
+  }
+
+  temp.childNodes.forEach((nodo) => {
+    const esAccent =
+      nodo.nodeType === 1 &&
+      nodo.classList &&
+      nodo.classList.contains("accent");
+    const texto = nodo.textContent;
+    const destinoFinal = esAccent ? document.createElement("span") : elemento;
+    if (esAccent) destinoFinal.className = "accent";
+
+    const palabras = texto.split(" ");
+    palabras.forEach((palabra, indice) => {
+      if (palabra.length > 0) {
+        const contenedorPalabra = document.createElement("span");
+        contenedorPalabra.className = "palabra";
+        [...palabra].forEach((caracter) =>
+          contenedorPalabra.appendChild(crearLetra(caracter)),
+        );
+        destinoFinal.appendChild(contenedorPalabra);
       }
-
-      const temp = document.createElement('div');
-      temp.innerHTML = titulo.dataset.original;
-
-      titulo.innerHTML = '';
-      let delay = 0;
-
-      function crearLetra(caracter) {
-        const span = document.createElement('span');
-        span.className = 'letra';
-        span.style.animationDelay = delay + 's';
-        span.textContent = caracter;
-        delay += 0.025;
-        return span;
+      if (indice < palabras.length - 1) {
+        destinoFinal.appendChild(crearLetra("\u00A0"));
+        delay -= 0.025;
       }
+    });
 
-      temp.childNodes.forEach((nodo) => {
-        const esAccent = nodo.nodeType === 1 && nodo.classList.contains('accent');
-        const texto = nodo.textContent;
-        const destinoFinal = esAccent ? document.createElement('span') : titulo;
-        if (esAccent) destinoFinal.className = 'accent';
+    if (esAccent) elemento.appendChild(destinoFinal);
+  });
+}
 
-        // Separar en palabras, para que cada palabra quede agrupada y no se corte a mitad
-        const palabras = texto.split(' ');
+// El hero se anima apenas carga la página, como siempre
+animarTituloElemento(titulo);
 
-        palabras.forEach((palabra, indice) => {
-          if (palabra.length > 0) {
-            const contenedorPalabra = document.createElement('span');
-            contenedorPalabra.className = 'palabra';
-            [...palabra].forEach((caracter) => {
-              contenedorPalabra.appendChild(crearLetra(caracter));
-            });
-            destinoFinal.appendChild(contenedorPalabra);
-          }
+// Los h2 de cada sección se animan recién cuando entran en pantalla al scrollear
+const titulosSeccion = document.querySelectorAll(".servicios-titulo h2");
+const observadorTitulos = new IntersectionObserver(
+  (entradas) => {
+    entradas.forEach((entrada) => {
+      if (entrada.isIntersecting) {
+        animarTituloElemento(entrada.target);
+        observadorTitulos.unobserve(entrada.target);
+      }
+    });
+  },
+  { threshold: 0.3 },
+);
 
-          // Espacio entre palabras (no en la última)
-          if (indice < palabras.length - 1) {
-            destinoFinal.appendChild(crearLetra('\u00A0'));
-            delay -= 0.025; // el espacio no suma delay extra
-          }
-        });
-
-        if (esAccent) titulo.appendChild(destinoFinal);
-      });
-    }
-
-    animarTitulo();
+titulosSeccion.forEach((h2) => observadorTitulos.observe(h2));
 
     // --- Menú hamburguesa (mobile) ---
     const menuToggle = document.querySelector('.menu-toggle');
@@ -165,3 +178,22 @@
       window.addEventListener('resize', dibujarConectores);
       dibujarConectores();
     }
+
+    const titulosH3 = document.querySelectorAll(
+      ".servicio-card h3, .proyecto-body h3, .credenciales-izq h3, .contacto-izq h3",
+    );
+    titulosH3.forEach((h3) => h3.classList.add("reveal"));
+
+    const observadorH3 = new IntersectionObserver(
+      (entradas) => {
+        entradas.forEach((entrada) => {
+          if (entrada.isIntersecting) {
+            entrada.target.classList.add("visible");
+            observadorH3.unobserve(entrada.target);
+          }
+        });
+      },
+      { threshold: 0.3 },
+    );
+
+    titulosH3.forEach((h3) => observadorH3.observe(h3));

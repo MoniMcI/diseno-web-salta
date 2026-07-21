@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://diseñowebsalta.com.ar/sitemap.xml
+Sitemap: https://xn--diseowebsalta-lkb.com.ar/sitemap.xml

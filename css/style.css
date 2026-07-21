@@ -314,7 +314,8 @@ h1 {
   letter-spacing: -0.01em;
 }
 
-h1 .palabra {
+h1 .palabra,
+.servicios-titulo h2 .palabra {
   display: inline-block;
   white-space: nowrap;
 }
@@ -325,7 +326,8 @@ h1 .palabra {
   }
 }
 
-h1 .letra {
+h1 .letra,
+.servicios-titulo h2 .letra {
   display: inline-block;
   opacity: 0;
   transform: translateY(-60px);
@@ -1338,6 +1340,14 @@ h1 .accent .letra {
   border: 1px solid var(--border-subtle);
   border-radius: 18px;
   padding: 40px;
+  transition: transform 0.35s ease, box-shadow 0.35s ease, border-color 0.35s ease;
+}
+
+.credenciales-card:hover,
+.contacto-card:hover {
+  transform: translateY(-6px) scale(1.01);
+  border-color: rgba(168,85,247,0.4);
+  box-shadow: 0 25px 60px rgba(0,0,0,0.4), 0 0 45px rgba(168,85,247,0.25);
 }
 
 .credenciales-izq {
@@ -1437,6 +1447,7 @@ h1 .accent .letra {
   border: 1px solid var(--border-subtle);
   border-radius: 18px;
   padding: 44px;
+  transition: transform 0.35s ease, box-shadow 0.35s ease, border-color 0.35s ease;
 }
 
 .contacto-izq {
@@ -1649,4 +1660,15 @@ footer {
 .replay:hover {
   color: var(--text-white);
   border-color: var(--accent-violet);
+}
+
+/* ANIMACIONES FINALES */
+h3.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+h3.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
 }
