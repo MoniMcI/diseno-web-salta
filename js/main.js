@@ -12,25 +12,42 @@
       titulo.innerHTML = '';
       let delay = 0;
 
+      function crearLetra(caracter) {
+        const span = document.createElement('span');
+        span.className = 'letra';
+        span.style.animationDelay = delay + 's';
+        span.textContent = caracter;
+        delay += 0.025;
+        return span;
+      }
+
       temp.childNodes.forEach((nodo) => {
         const esAccent = nodo.nodeType === 1 && nodo.classList.contains('accent');
         const texto = nodo.textContent;
-        const contenedor = esAccent ? document.createElement('span') : null;
-        if (contenedor) contenedor.className = 'accent';
+        const destinoFinal = esAccent ? document.createElement('span') : titulo;
+        if (esAccent) destinoFinal.className = 'accent';
 
-        const destino = contenedor || titulo;
+        // Separar en palabras, para que cada palabra quede agrupada y no se corte a mitad
+        const palabras = texto.split(' ');
 
-        [...texto].forEach((caracter) => {
-          const span = document.createElement('span');
-          span.className = 'letra';
-          span.style.animationDelay = delay + 's';
-          span.textContent = caracter === ' ' ? '\u00A0' : caracter;
-          if (caracter === ' ') span.style.width = '0.28em';
-          destino.appendChild(span);
-          delay += 0.025;
+        palabras.forEach((palabra, indice) => {
+          if (palabra.length > 0) {
+            const contenedorPalabra = document.createElement('span');
+            contenedorPalabra.className = 'palabra';
+            [...palabra].forEach((caracter) => {
+              contenedorPalabra.appendChild(crearLetra(caracter));
+            });
+            destinoFinal.appendChild(contenedorPalabra);
+          }
+
+          // Espacio entre palabras (no en la última)
+          if (indice < palabras.length - 1) {
+            destinoFinal.appendChild(crearLetra('\u00A0'));
+            delay -= 0.025; // el espacio no suma delay extra
+          }
         });
 
-        if (contenedor) titulo.appendChild(contenedor);
+        if (esAccent) titulo.appendChild(destinoFinal);
       });
     }
 
